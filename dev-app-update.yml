@@ -1,0 +1,11 @@
+# Placeholder auto-update feed for local/dev testing.
+# electron-updater is NOT wired yet — this file documents the intended feed shape.
+#
+# When enabling updates:
+#   1. Set publish.url in electron-builder.yml to your release CDN
+#   2. Add electron-updater and implement src/main/updater/
+#   3. Run electron-builder with --publish never|always as appropriate
+#
+provider: generic
+url: https://releases.example.com/apiverify/macos
+updaterCacheDirName: apiverify-updater

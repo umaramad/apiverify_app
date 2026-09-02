@@ -1,0 +1,115 @@
+appId: app.apiverify.desktop
+productName: APIVerify
+copyright: Copyright © 2026 APIVerify
+
+directories:
+  buildResources: build
+  output: dist
+
+# Pack compiled output + main-process runtime deps only (UI is pre-bundled in out/renderer).
+files:
+  - out/**/*
+  - resources/**/*
+  - package.json
+  - node_modules/**/*
+  - '!**/.vscode/*'
+  - '!src/**'
+  - '!tests/**'
+  - '!scripts/**'
+  - '!build/**'
+  - '!dist/**'
+  - '!logs/**'
+  - '!build_deploy.sh'
+  - '!electron-builder*.yml'
+  - '!electron.vite.config.{js,ts,mjs,cjs}'
+  - '!{.eslintcache,eslint.config.mjs,.prettierignore,.prettierrc.yaml,CHANGELOG.md,README.md}'
+  - '!{.env,.env.*,.npmrc,pnpm-lock.yaml}'
+  - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json,vitest.config.ts}'
+  - '!resources/original/**'
+  - '!node_modules/**/{CHANGELOG.md,README.md,README,readme.md,readme,LICENSE,LICENSE.md,LICENSE.txt}'
+  - '!node_modules/**/{test,__tests__,tests,powered-test,example,examples,demo,demos}'
+  - '!node_modules/**/*.d.ts'
+  - '!node_modules/**/*.map'
+  - '!node_modules/better-sqlite3/{deps,src,benchmark,binding.gyp,README.md,prebuilds}'
+  # Dev-only UI deps are already bundled into out/renderer — do not ship source packages.
+  - '!node_modules/@mui/**'
+  - '!node_modules/@emotion/**'
+  - '!node_modules/react/**'
+  - '!node_modules/react-dom/**'
+  - '!node_modules/zustand/**'
+  - '!node_modules/vite/**'
+  - '!node_modules/typescript/**'
+  - '!node_modules/electron/**'
+  - '!node_modules/electron-builder/**'
+  - '!node_modules/electron-vite/**'
+
+asar: true
+asarUnpack:
+  - resources/**
+  - node_modules/better-sqlite3/**/*
+
+# Native modules (better-sqlite3) must be rebuilt for the Electron runtime.
+npmRebuild: true
+
+afterPack: scripts/electron-after-pack.cjs
+
+# Smaller zips: English-only Chromium locales + strongest archive compression.
+electronLanguages:
+  - en-US
+compression: maximum
+
+# Auto-update placeholder — configure URL before enabling electron-updater.
+# See dev-app-update.yml and src/main/updater/index.ts
+publish:
+  provider: generic
+  url: https://releases.example.com/apiverify/macos
+  publishAutoUpdate: false
+
+mac:
+  category: public.app-category.developer-tools
+  # Brand icon (resources/icon.png). Prefer .icns when present so builder
+  # does not re-encode a large PNG into a multi-MB icns at package time.
+  icon: build/icon.icns
+  artifactName: ${productName}-${version}-${arch}.${ext}
+  hardenedRuntime: true
+  gatekeeperAssess: false
+  entitlements: build/entitlements.mac.plist
+  entitlementsInherit: build/entitlements.mac.plist
+  # Arch is driven by the CLI flags in each dist script (--arm64/--x64).
+  # Keeping arch lists here overrides those flags and makes the "current
+  # arch only" unsigned build also emit x64 artifacts (one of which can
+  # exceed the 95MB portable budget).
+  target:
+    - dmg
+    - zip
+  extendInfo:
+    CFBundleDisplayName: APIVerify
+    CFBundleName: APIVerify
+    NSDocumentsFolderUsageDescription: APIVerify imports OpenAPI specifications and stores validation results in your workspace.
+    NSDownloadsFolderUsageDescription: APIVerify may read specification files from your Downloads folder when you import them.
+
+dmg:
+  artifactName: ${productName}-${version}-${arch}.${ext}
+  title: ${productName} ${version}
+  writeUpdateInfo: false
+
+# Reserved for future cross-platform releases (not used by `npm run dist`).
+win:
+  executableName: apiverify
+  # electron-builder converts PNG → ICO at package time
+  icon: resources/icon.png
+nsis:
+  artifactName: ${productName}-${version}-setup.${ext}
+  shortcutName: ${productName}
+  uninstallDisplayName: ${productName}
+  createDesktopShortcut: always
+
+linux:
+  icon: resources/icon.png
+  category: Development
+  target:
+    - AppImage
+    - deb
+  maintainer: APIVerify
+appImage:
+  artifactName: ${productName}-${version}.${ext}

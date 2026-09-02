@@ -1,0 +1,11 @@
+# Fast local macOS build: .app bundle only, no code signing.
+# Overrides parent multi-arch / DMG targets — dir output for current CLI arch only.
+
+extends: electron-builder.yml
+
+mac:
+  identity: null
+  hardenedRuntime: false
+  gatekeeperAssess: false
+  target: dir
+  artifactName: ${productName}-${version}-${arch}.${ext}

@@ -1,0 +1,24 @@
+node_modules
+dist
+out
+.DS_Store
+.eslintcache
+*.log*
+# New tests are trackable; the pre-existing suite under tests/ stays ignored.
+tests/*
+!tests/localLogReader.test.ts
+!tests/outputView.store.test.ts
+!tests/logParser.test.ts
+!tests/logTree.test.ts
+!tests/logAnalysisPanel.test.tsx
+!tests/linuxSearchOutputPanel.test.tsx
+src/modules/linuxSearchAssistant/tests/
+*.zip
+*.zip.blockmap
+resources/original/
+build/
+.freebuff/
+.editorconfig
+.prettierignore
+.vscode/
+.prettierrc.yaml

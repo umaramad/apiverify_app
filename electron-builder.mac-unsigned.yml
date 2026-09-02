@@ -1,0 +1,16 @@
+# Unsigned macOS DMG for the current machine's architecture (no code signing).
+# Overrides parent multi-arch targets so only the CLI arch is packaged.
+
+extends: electron-builder.yml
+
+mac:
+  identity: null
+  hardenedRuntime: false
+  gatekeeperAssess: false
+  target:
+    - dmg
+  # Prevent inheriting dmg+zip for both arm64 and x64 from electron-builder.yml
+  artifactName: ${productName}-${version}-${arch}.${ext}
+
+dmg:
+  artifactName: ${productName}-${version}-${arch}.${ext}

@@ -1,0 +1,25 @@
+# Portable ZIP builds — extract and run, no installer required.
+# macOS: unzip, then open APIVerify.app (right-click → Open if Gatekeeper blocks).
+# Windows: unzip, then run apiverify.exe from the folder.
+
+extends: electron-builder.yml
+
+compression: maximum
+
+mac:
+  identity: null
+  hardenedRuntime: false
+  gatekeeperAssess: false
+  target: zip
+  artifactName: ${productName}-${version}-portable-macos-${arch}.${ext}
+
+win:
+  target: zip
+  artifactName: ${productName}-${version}-portable-windows-${arch}.${ext}
+
+# Skip DMG / NSIS from parent config.
+dmg:
+  writeUpdateInfo: false
+
+nsis:
+  oneClick: false
